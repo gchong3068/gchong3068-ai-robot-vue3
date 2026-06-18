@@ -28,7 +28,8 @@ export default defineConfig({
       iconDirs: [path.resolve(process.cwd(), 'src/assets/icons')],
       // 定义生成的 <symbol> 元素的 id 属性的命名格式
       symbolId: 'icon-[dir]-[name]',
-
+ 
+      
       /**
        * 自定义 SVG Sprite 的插入位置
        * @default: body-last
