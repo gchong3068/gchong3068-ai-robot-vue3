@@ -7,7 +7,7 @@ export const useChatStore = defineStore('chat', () => {
   // 定义模型列表
   const models = ref([
     { id: 1, name: 'deepseek-v3', icon: 'deepseek-logo', description: '更流畅', selected: true },
-    { id: 2, name: 'deepseek-r1', icon: 'deepseek-logo', description: '深度思考', selected: false },
+    { id: 2, name: 'qwen3.7-plus', icon: 'qwen-logo', description: '深度思考', selected: false },
   ])
 
   // 选中的模型，默认为第一个

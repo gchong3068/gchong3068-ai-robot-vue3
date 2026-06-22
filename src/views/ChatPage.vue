@@ -207,28 +207,34 @@ const sendMessage = async (payload) => {
       },
       body: JSON.stringify(requestBody),
       onmessage(msg) {
-        if (msg.event === '') {
-          // 收到第一条数据后设置 loading 为 false
-          if (lastMessage.loading) {
-              lastMessage.loading = false;
+          // 1. 忽略空数据和结束标记
+          if (!msg.data || msg.data.trim() === '' || msg.data === '[DONE]') {
+            return;
           }
-          // 解析 JSON
-          let parseJson = JSON.parse(msg.data)
-          // 持续追加流式回答
-          responseText += parseJson.v
 
-          // 更新最后一条消息
-          chatList.value[chatList.value.length - 1].content = responseText
-          // 滚动到底部
-          scrollToBottom()
-        }
-        else if (msg.event === 'close') {
-          console.log('-- sse close')
-          controller.abort();
-        }
+          let parsedData;
+          // 2. 安全地解析 JSON
+          try {
+            parsedData = JSON.parse(msg.data);
+          } catch (e) {
+            // 解析失败时，只打印警告，不要抛出异常中断连接
+            console.warn('SSE 数据解析失败，非标准JSON数据:', msg.data);
+            return; 
+          }
+
+          // 3. 只有解析成功才处理业务逻辑
+          if (msg.event === '') {
+            if (lastMessage.loading) {
+                lastMessage.loading = false;
+            }
+            // 持续追加流式回答
+            responseText += parsedData.v;
+            chatList.value[chatList.value.length - 1].content = responseText;
+            scrollToBottom();
+          }
       },
       onerror(err) {
-        throw err;    // 必须 throw 才能停止 
+        console.error('SSE 连接发生错误:', err);    // 必须 throw 才能停止 
       }
     })
   } catch (error) {
