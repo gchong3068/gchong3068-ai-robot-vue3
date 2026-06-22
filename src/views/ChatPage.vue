@@ -194,7 +194,12 @@ const sendMessage = async (payload) => {
     const controller = new AbortController()
     const signal = controller.signal
 
-    fetchEventSource('http://localhost:8080/chat/completion', {
+    const baseUrl = `${window.location.protocol}//${window.location.hostname}:8080`;
+
+    // 2. 拼接具体接口路径
+    const url = `${baseUrl}/chat/completion`;
+
+    fetchEventSource(url, {
       method: 'POST',
       signal: signal,
       headers: {
